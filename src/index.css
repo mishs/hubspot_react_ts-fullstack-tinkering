@@ -1,19 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Base styles for consistent typography and accessibility */
-@layer base {
-  * {
-    @apply box-border;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  body {
-    @apply m-0 bg-neutral-50 font-sans text-neutral-900 antialiased;
-  }
+body {
+  margin: 0;
+  background-color: #f9fafb;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  /* Focus visible styles for keyboard navigation accessibility */
-  :focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary-600;
-  }
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
