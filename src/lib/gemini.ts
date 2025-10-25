@@ -1,13 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { User } from "@/types";
-
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-let genAI: GoogleGenerativeAI | null = null;
-
-if (apiKey && apiKey !== "") {
-  genAI = new GoogleGenerativeAI(apiKey);
-}
 
 export async function generateUserBio(user: User): Promise<string> {
   await new Promise((resolve) => setTimeout(resolve, 1200));
