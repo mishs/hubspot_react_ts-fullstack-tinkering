@@ -1,5 +1,4 @@
-import { Spinner } from "@/components/atoms";
-import { EmptyState, UserCard } from "@/components/molecules";
+import { EmptyState, UserCard, UserCardSkeleton } from "@/components/molecules";
 import type { User } from "@/types";
 
 interface UserGridProps {
@@ -11,8 +10,15 @@ interface UserGridProps {
 export const UserGrid = ({ users, isLoading, onUserClick }: UserGridProps) => {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-16" role="status" aria-live="polite">
-        <Spinner size="lg" />
+      <div
+        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        role="status"
+        aria-live="polite"
+        aria-label="Loading users"
+      >
+        {Array.from({ length: 8 }).map((_, i) => (
+          <UserCardSkeleton key={i} />
+        ))}
       </div>
     );
   }

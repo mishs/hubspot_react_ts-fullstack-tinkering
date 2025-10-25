@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Avatar, Badge, Button, Text } from "@/components/atoms";
+import { Avatar, Badge, Button, Skeleton, Text } from "@/components/atoms";
+import { useAIBio } from "@/hooks/useAIBio";
 import type { User } from "@/types";
 
 interface SidebarProps {
@@ -11,6 +12,7 @@ interface SidebarProps {
 export const Sidebar = ({ user, isOpen, onClose }: SidebarProps) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const { bio, isLoading: bioLoading } = useAIBio(user);
 
   useEffect(() => {
     if (isOpen) {
@@ -143,6 +145,27 @@ export const Sidebar = ({ user, isOpen, onClose }: SidebarProps) => {
                 <Text size="base">
                   {user.address.city}, {user.address.zipcode}
                 </Text>
+              </div>
+
+              <div className="rounded-lg border border-primary-100 bg-primary-50 p-4">
+                <Text size="sm" weight="semibold" color="muted" className="mb-2">
+                  Professional Bio
+                </Text>
+                {bioLoading ? (
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                ) : bio ? (
+                  <Text size="sm" color="secondary">
+                    {bio}
+                  </Text>
+                ) : (
+                  <Text size="sm" color="muted">
+                    Bio generation unavailable
+                  </Text>
+                )}
               </div>
             </div>
           </div>
