@@ -29,7 +29,7 @@ export const AIChat = ({ user }: AIChatProps) => {
     try {
       const aiResponse = await chatWithAI(user, userMessage);
       setMessages((prev) => [...prev, { role: "ai", content: aiResponse }]);
-    } catch (error) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         { role: "ai", content: "Sorry, I encountered an error. Please try again." },
