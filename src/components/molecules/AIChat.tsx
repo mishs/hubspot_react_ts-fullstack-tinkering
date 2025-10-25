@@ -1,4 +1,5 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { Button, Input, Skeleton, Text } from "@/components/atoms";
 import { chatWithAI } from "@/lib/gemini";
 import type { User } from "@/types";

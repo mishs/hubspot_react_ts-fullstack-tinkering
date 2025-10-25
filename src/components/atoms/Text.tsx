@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 interface TextProps extends HTMLAttributes<HTMLElement> {
   as?: "p" | "span" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
