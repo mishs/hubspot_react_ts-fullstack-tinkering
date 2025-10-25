@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { SearchBar } from "@/components/molecules";
+import { SearchBar, SortControls } from "@/components/molecules";
 import { Sidebar, UserGrid } from "@/components/organisms";
 import { useUserStore } from "@/stores/useUserStore";
 import { fetchUsers } from "@/lib/api";
@@ -11,12 +11,14 @@ export const HomePage = () => {
     isLoading,
     error,
     searchQuery,
+    sortConfig,
     selectedUser,
     isSidebarOpen,
     setUsers,
     setLoading,
     setError,
     setSearchQuery,
+    setSortConfig,
     setSelectedUser,
     setSidebarOpen,
   } = useUserStore();
@@ -40,12 +42,13 @@ export const HomePage = () => {
 
   return (
     <>
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <SearchBar
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Search users by name..."
         />
+        <SortControls sortConfig={sortConfig} onSortChange={setSortConfig} />
       </div>
 
       {error && (
