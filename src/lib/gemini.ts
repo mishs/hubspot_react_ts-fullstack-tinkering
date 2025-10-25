@@ -15,7 +15,7 @@ export async function generateUserBio(user: User): Promise<string> {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-pro" });
 
     const prompt = `Write a brief professional bio (2-3 sentences) for this person based on their information:
 
@@ -41,7 +41,7 @@ export async function chatWithAI(user: User, question: string): Promise<string> 
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-pro" });
 
     const prompt = `You are a helpful assistant with information about this person:
 
