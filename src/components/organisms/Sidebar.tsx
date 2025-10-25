@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Avatar, Badge, Button, Skeleton, Text } from "@/components/atoms";
+import { AIChat } from "@/components/molecules";
 import { useAIBio } from "@/hooks/useAIBio";
 import type { User } from "@/types";
 
@@ -149,7 +150,7 @@ export const Sidebar = ({ user, isOpen, onClose }: SidebarProps) => {
 
               <div className="rounded-lg border border-primary-100 bg-primary-50 p-4">
                 <Text size="sm" weight="semibold" color="muted" className="mb-2">
-                  Professional Bio
+                  AI-Generated Professional Bio
                 </Text>
                 {bioLoading ? (
                   <div className="space-y-2">
@@ -167,6 +168,8 @@ export const Sidebar = ({ user, isOpen, onClose }: SidebarProps) => {
                   </Text>
                 )}
               </div>
+
+              <AIChat user={user} />
             </div>
           </div>
         </div>
