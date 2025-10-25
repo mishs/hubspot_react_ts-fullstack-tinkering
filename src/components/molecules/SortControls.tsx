@@ -23,7 +23,7 @@ export const SortControls = ({ sortConfig, onSortChange }: SortControlsProps) =>
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="text-sm font-medium text-neutral-700">Sort by:</span>
+      <span className="text-sm font-medium text-neutral-700 leading-none">Sort by:</span>
       {fields.map(({ field, label }) => {
         const isActive = sortConfig.field === field;
         const arrow = isActive ? (sortConfig.order === "asc" ? " ↑" : " ↓") : "";
