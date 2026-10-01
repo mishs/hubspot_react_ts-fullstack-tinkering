@@ -1,10 +1,12 @@
 # User Directory Application
 
+**[View demo in your browser →](https://hubspot-partner-fullstack-challenge.netlify.app/)**
+
 A production-ready, enterprise-grade user directory application built with React, TypeScript, and modern web technologies. This application demonstrates advanced software engineering practices including Atomic Design architecture, type-safe data validation, state management, and intelligent AI-powered features.
 
 ## 🎯 Project Overview
 
-This application provides a comprehensive user management interface with real-time search, sorting capabilities, and an innovative CRM-style sidebar featuring AI-powered user insights. Built as part of a technical assessment, it showcases senior-level engineering practices and attention to detail in both architecture and user experience.
+This application provides a comprehensive user management interface with real-time search, sorting capabilities, and an innovative CRM-style sidebar featuring AI-powered user insights. The implementation combines component composition, API validation, and shared application state.
 
 ## 🌐 Live Demo & Screenshots
 
@@ -33,7 +35,7 @@ This application provides a comprehensive user management interface with real-ti
 - **Error Handling**: Graceful error states with user-friendly messaging and retry mechanisms
 - **Type Safety**: End-to-end type safety with TypeScript strict mode and Zod validation
 
-### Extra Credit Features
+### Additional Features
 - **CRM-Style Sidebar**: Slide-in drawer with detailed user information and AI interactions
 - **AI-Powered Insights**: Intelligent bio generation and conversational chat interface
 - **Skeleton Loading States**: Professional loading experience with skeleton components
