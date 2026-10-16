@@ -32,7 +32,7 @@ This application provides a comprehensive user management interface with real-ti
 - **Advanced Search**: Debounced search (300ms) across name, email, and company fields
 - **Multi-field Sorting**: Sort users by name, email, or company with ascending/descending order
 - **Responsive Grid Layout**: Adaptive layout from 1 to 4 columns based on viewport size
-- **Error Handling**: Graceful error states with user-friendly messaging and retry mechanisms
+- **Error Handling**: A failed load explains what went wrong and offers **Retry**, which requests the directory again in place (no page reload; search and sort are kept). A failed retry says so and stays retryable. An empty directory, a search with no matches and a failed load each have their own message
 - **Type Safety**: End-to-end type safety with TypeScript strict mode and Zod validation
 
 ### Additional Features
@@ -202,6 +202,8 @@ npm run dev          # Start development server with HMR
 npm run build        # Create production build (dist/)
 npm run preview      # Preview production build locally
 npm run lint         # Run ESLint code analysis
+npm test             # Unit and component tests (Vitest + Testing Library)
+npm run test:e2e     # Browser tests on the production build (Playwright: Chromium, WebKit, emulated iPhone 13)
 npm run format       # Format code with Prettier
 ```
 
@@ -289,16 +291,9 @@ The AI system uses intelligent pattern matching and contextual data extraction t
 - **ESLint**: Zero lint errors in production code
 - **Prettier**: Consistent code formatting enforced
 
-### Testing Strategy (Future Enhancement)
-```bash
-# Recommended test setup
-npm install -D vitest @testing-library/react @testing-library/jest-dom
-```
-
-Test coverage targets:
-- Unit tests for utilities and hooks: 90%+
-- Component tests for atoms and molecules: 80%+
-- Integration tests for organisms and pages: 70%+
+### Testing
+- `npm test`: the directory request (`src/lib/api.test.ts`: HTTP error, unreachable service, malformed data, valid empty list, cancellation) and the page's load states (`src/components/pages/HomePage.test.tsx`: failure message, Retry pending, recovery without duplicates, repeated failure, search kept after recovery, keyboard use, empty directory vs no search matches).
+- `npm run test:e2e`: the same journey in real browsers against the production build. Failures are simulated by intercepting the directory request inside the test browser; one test loads from the real API. First run: `npx playwright install chromium webkit`.
 
 ## 🤖 Development Process & AI Usage
 
