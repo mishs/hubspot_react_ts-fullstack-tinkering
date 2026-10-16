@@ -4,15 +4,11 @@ import type { User, SortConfig } from "@/types";
 interface UserStore {
   users: User[];
   filteredUsers: User[];
-  isLoading: boolean;
-  error: string | null;
   searchQuery: string;
   sortConfig: SortConfig;
   selectedUser: User | null;
   isSidebarOpen: boolean;
   setUsers: (users: User[]) => void;
-  setLoading: (isLoading: boolean) => void;
-  setError: (error: string | null) => void;
   setSearchQuery: (query: string) => void;
   setSortConfig: (config: SortConfig) => void;
   setSelectedUser: (user: User | null) => void;
@@ -23,8 +19,6 @@ interface UserStore {
 export const useUserStore = create<UserStore>((set, get) => ({
   users: [],
   filteredUsers: [],
-  isLoading: false,
-  error: null,
   searchQuery: "",
   sortConfig: { field: "name", order: "asc" },
   selectedUser: null,
@@ -34,10 +28,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ users });
     get().filterAndSortUsers();
   },
-
-  setLoading: (isLoading) => set({ isLoading }),
-
-  setError: (error) => set({ error }),
 
   setSearchQuery: (searchQuery) => {
     set({ searchQuery });

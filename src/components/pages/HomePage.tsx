@@ -1,44 +1,47 @@
-import { useEffect } from "react";
-import { SearchBar, SortControls } from "@/components/molecules";
+import { useEffect, useRef, useState } from "react";
+import { LoadError, SearchBar, SortControls } from "@/components/molecules";
 import { Sidebar, UserGrid } from "@/components/organisms";
 import { useUserStore } from "@/stores/useUserStore";
-import { fetchUsers } from "@/lib/api";
-import { Text } from "@/components/atoms";
+import { useDirectoryLoad } from "@/hooks/useDirectoryLoad";
 
 export const HomePage = () => {
   const {
+    users,
     filteredUsers,
-    isLoading,
-    error,
     searchQuery,
     sortConfig,
     selectedUser,
     isSidebarOpen,
     setUsers,
-    setLoading,
-    setError,
     setSearchQuery,
     setSortConfig,
     setSelectedUser,
     setSidebarOpen,
   } = useUserStore();
 
-  useEffect(() => {
-    const loadUsers = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const users = await fetchUsers();
-        setUsers(users);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load users");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { status, error, failedAttempts, retry } = useDirectoryLoad(setUsers);
+  const isRetrying = status === "loading" && error !== null;
+  const retryButton = useRef<HTMLButtonElement>(null);
+  const results = useRef<HTMLDivElement>(null);
+  const [announcement, setAnnouncement] = useState("");
+  const recovering = useRef(false);
 
-    loadUsers();
-  }, [setUsers, setLoading, setError]);
+  // After a successful retry, say so and move keyboard focus from the (now gone) Retry
+  // button to the results, so keyboard users land where the records appeared.
+  useEffect(() => {
+    if (status === "error") recovering.current = true;
+    if (status === "success" && recovering.current) {
+      recovering.current = false;
+      setAnnouncement(`Directory loaded: ${users.length} users.`);
+      if (!document.activeElement || document.activeElement === document.body)
+        results.current?.focus();
+    }
+  }, [status, users.length]);
+
+  const onRetry = () => {
+    setAnnouncement("");
+    retry();
+  };
 
   return (
     <>
@@ -51,15 +54,31 @@ export const HomePage = () => {
         <SortControls sortConfig={sortConfig} onSortChange={setSortConfig} />
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4" role="alert">
-          <Text size="sm" className="text-red-800">
-            {error}
-          </Text>
-        </div>
+      {error && (status === "error" || isRetrying) && (
+        <LoadError
+          ref={retryButton}
+          error={error}
+          failedAttempts={failedAttempts}
+          isRetrying={isRetrying}
+          onRetry={onRetry}
+        />
       )}
 
-      <UserGrid users={filteredUsers} isLoading={isLoading} onUserClick={setSelectedUser} />
+      <p className="sr-only" role="status" data-testid="load-announcement">
+        {announcement}
+      </p>
+
+      <div ref={results} tabIndex={-1} className="outline-none" data-testid="directory-results">
+        {status !== "error" && (
+          <UserGrid
+            users={filteredUsers}
+            totalCount={users.length}
+            searchQuery={searchQuery}
+            isLoading={status === "loading"}
+            onUserClick={setSelectedUser}
+          />
+        )}
+      </div>
 
       <Sidebar user={selectedUser} isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
     </>

@@ -3,11 +3,20 @@ import type { User } from "@/types";
 
 interface UserGridProps {
   users: User[];
+  /** How many users the directory holds before search filtering. */
+  totalCount: number;
+  searchQuery: string;
   isLoading: boolean;
   onUserClick?: (user: User) => void;
 }
 
-export const UserGrid = ({ users, isLoading, onUserClick }: UserGridProps) => {
+export const UserGrid = ({
+  users,
+  totalCount,
+  searchQuery,
+  isLoading,
+  onUserClick,
+}: UserGridProps) => {
   if (isLoading) {
     return (
       <div
@@ -23,10 +32,16 @@ export const UserGrid = ({ users, isLoading, onUserClick }: UserGridProps) => {
     );
   }
 
+  if (totalCount === 0) {
+    return (
+      <EmptyState message="The directory is empty" description="There are no users to show yet." />
+    );
+  }
+
   if (users.length === 0) {
     return (
       <EmptyState
-        message="No users found"
+        message={searchQuery.trim() ? `No users match “${searchQuery.trim()}”` : "No users found"}
         description="Try adjusting your search criteria"
       />
     );
