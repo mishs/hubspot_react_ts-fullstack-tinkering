@@ -2,11 +2,11 @@
 
 **[View demo in your browser →](https://hubspot-partner-fullstack-challenge.netlify.app/)**
 
-A production-ready, enterprise-grade user directory application built with React, TypeScript, and modern web technologies. This application demonstrates advanced software engineering practices including Atomic Design architecture, type-safe data validation, state management, and intelligent AI-powered features.
+A user directory application built with React and TypeScript, demonstrating Atomic Design architecture, type-safe data validation (Zod), shared state (Zustand), and dependable loading and recovery. The "AI" bio and chat in the sidebar are **simulated**: deterministic, template-based responses with no call to a language model.
 
 ## 🎯 Project Overview
 
-This application provides a comprehensive user management interface with real-time search, sorting capabilities, and an innovative CRM-style sidebar featuring AI-powered user insights. The implementation combines component composition, API validation, and shared application state.
+This application provides a comprehensive user management interface with real-time search, sorting capabilities, and a CRM-style sidebar with simulated (template-based) bio and chat responses. The implementation combines component composition, API validation, and shared application state.
 
 ## 🌐 Live Demo & Screenshots
 
@@ -22,22 +22,22 @@ This application provides a comprehensive user management interface with real-ti
 ### Key Interactions
 - Responsive grid layout adapting from mobile to desktop
 - Real-time search with debounced filtering
-- CRM-style sidebar with AI-powered insights
+- CRM-style sidebar with simulated bio and chat responses
 - Professional skeleton loading states
 
 ## ✨ Features
 
 ### Core Functionality
 - **User Data Integration**: Fetches and displays user data from JSONPlaceholder API with runtime validation
-- **Advanced Search**: Debounced search (300ms) across name, email, and company fields
+- **Search**: Debounced search (300ms) by user name
 - **Multi-field Sorting**: Sort users by name, email, or company with ascending/descending order
 - **Responsive Grid Layout**: Adaptive layout from 1 to 4 columns based on viewport size
-- **Error Handling**: Graceful error states with user-friendly messaging and retry mechanisms
+- **Error Handling**: A failed load explains what went wrong and offers **Retry**, which requests the directory again in place (no page reload; search and sort are kept). A failed retry says so and stays retryable. An empty directory, a search with no matches and a failed load each have their own message
 - **Type Safety**: End-to-end type safety with TypeScript strict mode and Zod validation
 
 ### Additional Features
 - **CRM-Style Sidebar**: Slide-in drawer with detailed user information and AI interactions
-- **AI-Powered Insights**: Intelligent bio generation and conversational chat interface
+- **Simulated insights**: Template-based bio and keyword-matched chat answers built from the user's own data (no language model)
 - **Skeleton Loading States**: Professional loading experience with skeleton components
 - **Focus Management**: Keyboard navigation support and focus trapping in modals
 - **Accessibility**: WCAG 2.1 AA compliant with ARIA labels and semantic HTML
@@ -138,7 +138,7 @@ user-directory/
 │   │   └── useAIBio.ts          # AI bio generation hook
 │   ├── lib/
 │   │   ├── api.ts               # API client with validation
-│   │   ├── gemini.ts            # AI integration
+│   │   ├── gemini.ts            # Simulated bio/chat responses (no external API call)
 │   │   └── utils.ts             # Utility functions
 │   ├── schemas/
 │   │   └── user.schema.ts       # User type definitions
@@ -202,6 +202,8 @@ npm run dev          # Start development server with HMR
 npm run build        # Create production build (dist/)
 npm run preview      # Preview production build locally
 npm run lint         # Run ESLint code analysis
+npm test             # Unit and component tests (Vitest + Testing Library)
+npm run test:e2e     # Browser tests on the production build (Playwright: Chromium, WebKit, emulated iPhone 13)
 npm run format       # Format code with Prettier
 ```
 
@@ -209,7 +211,7 @@ npm run format       # Format code with Prettier
 
 ### Basic Operations
 
-**Search Users**: Type in the search bar to filter users by name, email, or company. Search is debounced by 300ms for optimal performance.
+**Search Users**: Type in the search bar to filter users by name. Search is debounced by 300ms.
 
 **Sort Users**: Click sort buttons to order users by:
 - Name (alphabetical)
@@ -229,25 +231,25 @@ Click the same button again to reverse sort order.
 - `Escape`: Close sidebar
 - Click outside sidebar to dismiss
 
-### AI Features
+### Simulated bio and chat
 
-The application includes intelligent AI-powered features for enhanced user insights:
+The sidebar's bio and chat are **simulated for demonstration**. `src/lib/gemini.ts` makes no call to Gemini or any other language model: it waits briefly to mimic latency, then builds deterministic, template-based text from the selected user's data.
 
 **Professional Bio Generation**:
-- Automatically generates context-aware professional bios
-- Uses deterministic algorithms for consistent results
+- Builds a short bio from a template, picking a role and phrase deterministically from the user's name and email
+- The same user always gets the same text
 - Example output: "John Doe is a Senior Product Manager at Acme Corp, specializing in user experience design and product strategy..."
 
 **Interactive Chat**:
 - Ask questions about the user's information
-- Context-aware responses based on user data
+- Answers come from simple keyword matching on the question (company, location, email…), filled in from the user's data
 - Example prompts:
   - "What company do they work for?"
   - "Where are they located?"
   - "What's their email address?"
 
 **Technical Implementation**:
-The AI system uses intelligent pattern matching and contextual data extraction to provide accurate responses. It's designed to work reliably without external API dependencies, ensuring a consistent demo experience.
+Keyword matching and string templates only, with no external API and no API key needed. Connecting a real model would mean a server-side call (to keep any key out of the browser) plus handling for latency, failure and unexpected answers; none of that exists yet.
 
 ## 📊 Performance Metrics
 
@@ -289,16 +291,9 @@ The AI system uses intelligent pattern matching and contextual data extraction t
 - **ESLint**: Zero lint errors in production code
 - **Prettier**: Consistent code formatting enforced
 
-### Testing Strategy (Future Enhancement)
-```bash
-# Recommended test setup
-npm install -D vitest @testing-library/react @testing-library/jest-dom
-```
-
-Test coverage targets:
-- Unit tests for utilities and hooks: 90%+
-- Component tests for atoms and molecules: 80%+
-- Integration tests for organisms and pages: 70%+
+### Testing
+- `npm test`: the directory request (`src/lib/api.test.ts`: HTTP error, unreachable service, malformed data, valid empty list, cancellation) and the page's load states (`src/components/pages/HomePage.test.tsx`: failure message, Retry pending, recovery without duplicates, repeated failure, search kept after recovery, keyboard use, empty directory vs no search matches).
+- `npm run test:e2e`: the same journey in real browsers against the production build. Failures are simulated by intercepting the directory request inside the test browser; one test loads from the real API. First run: `npx playwright install chromium webkit`.
 
 ## 🤖 Development Process & AI Usage
 
@@ -384,13 +379,13 @@ Ensure any production environment variables are set in your hosting provider's d
 - **Data Export**: Export filtered results to CSV/JSON
 - **Dark Mode**: Theme switching with user preference persistence
 - **Real-time Sync**: WebSocket integration for live updates
-- **Unit Testing**: Comprehensive test suite with Vitest
-- **E2E Testing**: Playwright tests for critical user flows
 - **Performance Monitoring**: Integration with Sentry or similar
 - **Analytics**: User behavior tracking and insights
 
-### Technical Debt
-None. This codebase maintains production-ready standards throughout.
+### Known limitations
+- The bio and chat are simulated (see above).
+- Search covers names only.
+- Tests cover the directory loading and recovery journey (`npm test`, `npm run test:e2e`); other components have no automated tests yet.
 
 ## 📝 License
 

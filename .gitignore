@@ -29,3 +29,7 @@ dist-ssr
 
 # Project-specific
 resources/
+
+# Playwright
+e2e/.results/
+playwright-report/

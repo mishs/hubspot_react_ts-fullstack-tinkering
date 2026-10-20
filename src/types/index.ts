@@ -6,9 +6,4 @@ export interface SortConfig {
   order: SortOrder;
 }
 
-export interface ApiError {
-  message: string;
-  status?: number;
-}
-
 export type { User, Address, Company } from "../schemas/user.schema";
